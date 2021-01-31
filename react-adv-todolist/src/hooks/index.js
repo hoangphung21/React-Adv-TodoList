@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { firebase } from '../firebase';
 
-const collatedTasks = () => { };
+const collatedTasksExist = () => { };
 
 export const useTasks = selectedProject => {
     const [tasks, setTasks] = useState([]);
@@ -15,5 +15,9 @@ export const useTasks = selectedProject => {
         unsubcribe = selectedProject && !collatedTasksExist(selectedProject) ?
             (unsubcribe = unsubcribe.where('projectId', '==', selectedProject))
             : selectedProject === 'TODAY'
+                ? (unsubcribe = unsubcribe.where('date', '==', moment().format('DD/MM/YYYY')))
+                : selectedProject === 'INBOX' || selectedProject === 0
+                    ? (unsubcribe = unsubcribe.where('date', '==', ''))
+                    : unsubcribe;
     }, []);
 }
